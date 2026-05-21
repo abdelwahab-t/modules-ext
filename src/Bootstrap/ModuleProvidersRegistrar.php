@@ -16,9 +16,9 @@ final readonly class ModuleProvidersRegistrar
     /**
      * @throws ClassNotFoundException
      */
-    public function register(string $providersDir, ModuleRegistrarInterface $provider): void
+    public function register(string $modulesPath, ModuleRegistrarInterface $provider): void
     {
-        foreach (glob($providersDir . '/*.php') as $file) {
+        foreach (glob($modulesPath . '/*/Providers/*.php') as $file) {
             $provider->getApp()->register(
                 $this->classNameResolver->resolve($file, $provider->getApp()->basePath())
             );
