@@ -4,8 +4,8 @@ namespace AbdelwahabT\ModulesExt\Console\Commands;
 
 use Illuminate\Console\Command;
 use Illuminate\Contracts\Foundation\Application;
-use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Composer;
+use Illuminate\Support\Facades\Storage;
 
 class MakeModuleCommand extends Command
 {
@@ -21,8 +21,7 @@ class MakeModuleCommand extends Command
 
     public function __construct(
         private readonly Composer $composer, 
-        private readonly Application $application,
-        private readonly Filesystem $filesystem
+        private readonly Application $application
     )
     {
         parent::__construct();
@@ -54,7 +53,7 @@ class MakeModuleCommand extends Command
 
         $this->modulePath = $this->application->basePath("modules/{$name}");
 
-        if ($this->filesystem->exists($this->modulePath)) {
+        if (Storage::exists($this->modulePath)) {
             $this->error("Module [{$name}] already exists!");
             return false;
         }
@@ -65,20 +64,20 @@ class MakeModuleCommand extends Command
 
     private function createApp(): void
     {
-        $this->filesystem->makeDirectory($this->modulePath . '/App', 0755, true);
-        $this->filesystem->makeDirectory($this->modulePath . '/App/Models', 0755, true);
-        $this->filesystem->makeDirectory($this->modulePath . '/App/Services', 0755, true);
-        $this->filesystem->makeDirectory($this->modulePath . '/App/Traits', 0755, true);
-        $this->filesystem->makeDirectory($this->modulePath . '/App/Contracts', 0755, true);
-        $this->filesystem->makeDirectory($this->modulePath . '/App/Enums', 0755, true);
-        $this->filesystem->makeDirectory($this->modulePath . '/App/Repositories', 0755, true);
-        $this->filesystem->makeDirectory($this->modulePath . '/App/DTO', 0755, true);
-        $this->filesystem->makeDirectory($this->modulePath . '/App/Http', 0755, true);
-        $this->filesystem->makeDirectory($this->modulePath . '/App/Http/Controllers', 0755, true);
-        $this->filesystem->makeDirectory($this->modulePath . '/App/Http/Requests', 0755, true);
-        $this->filesystem->makeDirectory($this->modulePath . '/App/Http/Responses', 0755, true);
-        $this->filesystem->makeDirectory($this->modulePath . '/App/Http/Resources', 0755, true);
-        $this->filesystem->makeDirectory($this->modulePath . '/App/Http/Middleware', 0755, true);
+        Storage::makeDirectory($this->modulePath . '/App', 0755, true);
+        Storage::makeDirectory($this->modulePath . '/App/Models', 0755, true);
+        Storage::makeDirectory($this->modulePath . '/App/Services', 0755, true);
+        Storage::makeDirectory($this->modulePath . '/App/Traits', 0755, true);
+        Storage::makeDirectory($this->modulePath . '/App/Contracts', 0755, true);
+        Storage::makeDirectory($this->modulePath . '/App/Enums', 0755, true);
+        Storage::makeDirectory($this->modulePath . '/App/Repositories', 0755, true);
+        Storage::makeDirectory($this->modulePath . '/App/DTO', 0755, true);
+        Storage::makeDirectory($this->modulePath . '/App/Http', 0755, true);
+        Storage::makeDirectory($this->modulePath . '/App/Http/Controllers', 0755, true);
+        Storage::makeDirectory($this->modulePath . '/App/Http/Requests', 0755, true);
+        Storage::makeDirectory($this->modulePath . '/App/Http/Responses', 0755, true);
+        Storage::makeDirectory($this->modulePath . '/App/Http/Resources', 0755, true);
+        Storage::makeDirectory($this->modulePath . '/App/Http/Middleware', 0755, true);
     }
 
     private function createRoutes(string $name): void
@@ -88,17 +87,17 @@ class MakeModuleCommand extends Command
             return;
         }
 
-        $this->filesystem->makeDirectory($this->modulePath . '/routes', 0755, true);
+        Storage::makeDirectory($this->modulePath . '/routes', 0755, true);
 
         if(!$this->option('no-web')) {
-            $this->filesystem->put(
+            Storage::put(
                 $this->modulePath . '/routes/web.php',
                 "<?php\n\nuse Illuminate\Support\Facades\Route;\n\nRoute::get('/" . strtolower($name) . "', function () {\n    return view('" . strtolower($name) . "::index');\n});\n"
             );
         }
 
         if ($this->option('api')) {
-            $this->filesystem->put(
+            Storage::put(
                 $this->modulePath . '/routes/api.php',
                 "<?php\n\nuse Illuminate\Support\Facades\Route;\n\nRoute::get('/" . strtolower($name) . "', function () {\n    return response()->json(['message' => '{$name} API endpoint working']);\n});\n"
             );
@@ -108,27 +107,27 @@ class MakeModuleCommand extends Command
 
     private function createMigrations(): void
     {
-        $this->filesystem->makeDirectory($this->modulePath . '/database/migrations', 0755, true);
-        $this->filesystem->makeDirectory($this->modulePath . '/database/seeders', 0755, true);
-        $this->filesystem->makeDirectory($this->modulePath . '/database/factories', 0755, true);
+        Storage::makeDirectory($this->modulePath . '/database/migrations', 0755, true);
+        Storage::makeDirectory($this->modulePath . '/database/seeders', 0755, true);
+        Storage::makeDirectory($this->modulePath . '/database/factories', 0755, true);
     }
 
     private function createViews(string $name): void
     {
-        $this->filesystem->makeDirectory($this->modulePath . '/views', 0755, true);
-        $this->filesystem->put($this->modulePath . '/views/index.blade.php', "<h1>{$name} Module Loaded!</h1>");
+        Storage::makeDirectory($this->modulePath . '/views', 0755, true);
+        Storage::put($this->modulePath . '/views/index.blade.php', "<h1>{$name} Module Loaded!</h1>");
     }
 
     private function createLanguages(): void
     {
         foreach (self::LANGUAGES as $lang) {
-            $this->filesystem->makeDirectory($this->modulePath . '/lang/' . $lang, 0755, true);
+            Storage::makeDirectory($this->modulePath . '/lang/' . $lang, 0755, true);
         }
     }
 
     private function createConfigurations(string $name): void
     {
-        $this->filesystem->put($this->modulePath . '/config.php', "<?php\n\nreturn [\n    // {$name} module config\n];\n");
+        Storage::put($this->modulePath . '/config.php', "<?php\n\nreturn [\n    // {$name} module config\n];\n");
     }
 
 }

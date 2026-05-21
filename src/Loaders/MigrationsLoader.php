@@ -5,14 +5,10 @@ namespace AbdelwahabT\ModulesExt\Loaders;
 use AbdelwahabT\ModulesExt\Contracts\ModuleLoaderInterface;
 use AbdelwahabT\ModulesExt\Contracts\ModuleRegistrarInterface;
 use AbdelwahabT\ModulesExt\Dto\ModuleDetailsDto;
-use Illuminate\Contracts\Filesystem\Filesystem;
+use Illuminate\Support\Facades\Storage;
 
 final readonly class MigrationsLoader implements ModuleLoaderInterface
 {
-
-    public function __construct(
-        private Filesystem $filesystem
-    ){}
 
     public function load(ModuleDetailsDto $moduleDetailsDto, ModuleRegistrarInterface $provider): void
     {
@@ -20,7 +16,7 @@ final readonly class MigrationsLoader implements ModuleLoaderInterface
         $paths = [];
 
         foreach ($moduleDetailsDto->migrationsPaths as $path) {
-            if ($this->filesystem->exists($path)) {
+            if (Storage::exists($path)) {
                 $paths[] = $path;
             }
         }
