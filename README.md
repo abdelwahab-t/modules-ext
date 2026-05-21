@@ -23,13 +23,33 @@ The package will automatically register its main service provider (`ModulesExtSe
 
 ## 🏗️ Creating a Module
 
-To create a new module, simply create a directory inside your `modules/` folder. The package expects standard Laravel directory structures inside each module:
+To create a new module, you can use the included Artisan command. This command scaffolds the entire module directory structure for you:
+
+```bash
+php artisan make:module Blog
+```
+
+### Command Options:
+- `--api`: Generates an `api.php` route file alongside the standard web routes.
+- `--no-web`: Skips generating the `web.php` route file.
+- `--no-routes`: Skips creating the `routes` directory entirely.
+
+**Example:** Generating a module intended strictly for API use:
+```bash
+php artisan make:module ApiModule --api --no-web
+```
+
+When you run the command, the package will automatically generate a standard, domain-driven directory structure inside your `modules/` folder:
 
 ```text
 modules/
-└── User/
+└── Blog/
+    ├── App/
+    │   ├── Controllers/
+    │   ├── Models/
+    │   ├── Services/
+    │   └── ...
     ├── Providers/
-    │   └── UserServiceProvider.php
     ├── database/
     │   ├── migrations/
     │   └── seeders/

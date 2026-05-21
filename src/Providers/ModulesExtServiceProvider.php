@@ -3,6 +3,7 @@
 namespace AbdelwahabT\ModulesExt\Providers;
 
 use AbdelwahabT\ModulesExt\Bootstrap\ModuleBootManager;
+use AbdelwahabT\ModulesExt\Console\Commands\MakeModuleCommand;
 use AbdelwahabT\ModulesExt\Contracts\ModuleRegistrarInterface;
 use AbdelwahabT\ModulesExt\Exceptions\ClassNotFoundException;
 use Illuminate\Contracts\Container\BindingResolutionException;
@@ -25,6 +26,11 @@ class ModulesExtServiceProvider extends ServiceProvider implements ModuleRegistr
      */
     public function boot(): void
     {
+        if ($this->app->runningInConsole()) {
+            $this->commands([
+                MakeModuleCommand::class,
+            ]);
+        }
         $this->moduleBootManager->boot('modules', $this);
     }
 
