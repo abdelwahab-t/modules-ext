@@ -5,7 +5,7 @@ namespace AbdelwahabT\ModulesExt\Bootstrap;
 use AbdelwahabT\ModulesExt\Contracts\ModuleRegistrarInterface;
 use AbdelwahabT\ModulesExt\Exceptions\ClassNotFoundException;
 use Illuminate\Contracts\Container\BindingResolutionException;
-use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\File;
 
 final readonly class ModuleBootManager
 {
@@ -21,7 +21,7 @@ final readonly class ModuleBootManager
     public function boot(string $modulesPath, ModuleRegistrarInterface $provider): void
     {
 
-        if (!Storage::exists($modulesPath)) {
+        if (!File::exists($modulesPath)) {
             return;
         }
 

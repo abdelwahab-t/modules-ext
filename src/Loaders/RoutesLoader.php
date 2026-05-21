@@ -5,7 +5,7 @@ namespace AbdelwahabT\ModulesExt\Loaders;
 use AbdelwahabT\ModulesExt\Contracts\ModuleLoaderInterface;
 use AbdelwahabT\ModulesExt\Contracts\ModuleRegistrarInterface;
 use AbdelwahabT\ModulesExt\Dto\ModuleDetailsDto;
-use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\File;
 
 final readonly class RoutesLoader implements ModuleLoaderInterface
 {
@@ -14,7 +14,7 @@ final readonly class RoutesLoader implements ModuleLoaderInterface
     {
 
         foreach ($moduleDetailsDto->routesPaths as $path) {
-            if (!Storage::exists($path)) {
+            if (!File::exists($path)) {
                 continue;
             }
             $provider->loadRoutes($path);

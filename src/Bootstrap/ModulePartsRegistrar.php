@@ -6,7 +6,7 @@ use AbdelwahabT\ModulesExt\Contracts\ModuleRegistrarInterface;
 use AbdelwahabT\ModulesExt\Dto\ModuleDetailsDto;
 use AbdelwahabT\ModulesExt\Factories\ModuleLoaderFactory;
 use Illuminate\Contracts\Container\BindingResolutionException;
-use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\File;
 
 final readonly class ModulePartsRegistrar
 {
@@ -20,7 +20,7 @@ final readonly class ModulePartsRegistrar
      */
     public function register(string $modulesPath, ModuleRegistrarInterface $provider): void
     {
-        foreach (Storage::directories($modulesPath) as $module) {
+        foreach (File::directories($modulesPath) as $module) {
             $this->moduleLoaderFactory->make($provider->getApp())->run(
                 $this->getModuleDto($module),
                 $provider
