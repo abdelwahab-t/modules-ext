@@ -130,7 +130,7 @@ class MakeModuleCommand extends Command
     {
         $className = $name . 'Controller';
         $path = $this->modulePath . "/App/Http/Controllers/$className.php";
-        $stub = "<?php\n\nnamespace App\\Modules\\$name\\App\\Http\\Controllers;\n\nuse Illuminate\\Routing\\Controller;\n\nuse use Illuminate\Http\JsonResponse;\n\nclass $className extends Controller\n{\n    public function __invoke(): JsonResponse\n    {\n        return response()->json(['message' => '$name controller works']);\n    }\n}\n";
+        $stub = "<?php\n\nnamespace App\\Modules\\$name\\App\\Http\\Controllers;\n\nuse Illuminate\\Routing\\Controller;\n\nuse Illuminate\Http\JsonResponse;\n\nclass $className extends Controller\n{\n    public function __invoke(): JsonResponse\n    {\n        return response()->json(['message' => '$name controller works']);\n    }\n}\n";
         File::put($path, $stub);
     }
 
