@@ -45,10 +45,11 @@ When you run the command, the package will automatically generate a standard, do
 modules/
 └── Blog/
     ├── App/
-    │   ├── Controllers/
-    │   ├── Models/
-    │   ├── Services/
-    │   └── ...
+    │   ├── Http/
+    │   │   ├── Controllers/
+    │   │   ├── Requests/
+    │   │   └── Resources/
+    │   └── Models/
     ├── Providers/
     ├── database/
     │   ├── migrations/
