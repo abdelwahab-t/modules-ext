@@ -4,7 +4,6 @@ namespace AbdelwahabT\ModulesExt\Console\Commands;
 
 use Illuminate\Console\Command;
 use Illuminate\Contracts\Foundation\Application;
-use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Composer;
 use Illuminate\Support\Facades\File;
 
@@ -146,7 +145,7 @@ class MakeModuleCommand extends Command
     {
         $className = $name . 'Resource';
         $path = $this->modulePath . "/App/Http/Resources/$className.php";
-        $stub = "<?php\n\nnamespace App\\Modules\\$name\\App\\Http\\Resources;\n\nuse Illuminate\\Http\\Resources\\JsonResource;\n\nclass $className extends JsonResource\n{\n    public function toArray(". '$request' ."): array\n    {\n        return parent::toArray(". '$request' .");\n    }\n}\n";
+        $stub = "<?php\n\nnamespace Modules\\$name\\App\\Http\\Resources;\n\nuse Illuminate\\Http\\Resources\\JsonResource;\n\nclass $className extends JsonResource\n{\n}\n";
         File::put($path, $stub);
     }
 
