@@ -130,7 +130,7 @@ class MakeModuleCommand extends Command
     {
         $className = $name . 'Controller';
         $path = $this->modulePath . "/App/Http/Controllers/{$className}.php";
-        $stub = "<?php\n\nnamespace Modules\\{$name}\\App\\Http\\Controllers;\n\nuse Illuminate\\Http\\Request;\nuse Illuminate\\Routing\\Controller;\n\nclass {$className} extends Controller\n{\n    public function __invoke()\n    {\n        return response()->json(['message' => '{$name} controller works']);\n    }\n}\n";
+        $stub = "<?php\n\nnamespace App\\Modules\\{$name}\\App\\Http\\Controllers;\n\nuse Illuminate\\Http\\Request;\nuse Illuminate\\Routing\\Controller;\n\nclass {$className} extends Controller\n{\n    public function __invoke()\n    {\n        return response()->json(['message' => '{$name} controller works']);\n    }\n}\n";
         File::put($path, $stub);
     }
 
@@ -138,7 +138,7 @@ class MakeModuleCommand extends Command
     {
         $className = $name . 'Request';
         $path = $this->modulePath . "/App/Http/Requests/{$className}.php";
-        $stub = "<?php\n\nnamespace Modules\\{$name}\\App\\Http\\Requests;\n\nuse Illuminate\\Foundation\\Http\\FormRequest;\n\nclass {$className} extends FormRequest\n{\n    public function authorize()\n    {\n        return true;\n    }\n\n    public function rules()\n    {\n        return [];\n    }\n}\n";
+        $stub = "<?php\n\nnamespace App\\Modules\\{$name}\\App\\Http\\Requests;\n\nuse Illuminate\\Foundation\\Http\\FormRequest;\n\nclass {$className} extends FormRequest\n{\n    public function authorize()\n    {\n        return true;\n    }\n\n    public function rules()\n    {\n        return [];\n    }\n}\n";
         File::put($path, $stub);
     }
 
@@ -146,7 +146,7 @@ class MakeModuleCommand extends Command
     {
         $className = $name . 'Resource';
         $path = $this->modulePath . "/App/Http/Resources/{$className}.php";
-        $stub = "<?php\n\nnamespace Modules\\{$name}\\App\\Http\\Resources;\n\nuse Illuminate\\Http\\Resources\\JsonResource;\n\nclass {$className} extends JsonResource\n{\n    public function toArray(". '$request' .")\n    {\n        return parent::toArray(". '$request' .");\n    }\n}\n";
+        $stub = "<?php\n\nnamespace App\\Modules\\{$name}\\App\\Http\\Resources;\n\nuse Illuminate\\Http\\Resources\\JsonResource;\n\nclass {$className} extends JsonResource\n{\n    public function toArray(". '$request' .")\n    {\n        return parent::toArray(". '$request' .");\n    }\n}\n";
         File::put($path, $stub);
     }
 
@@ -154,7 +154,7 @@ class MakeModuleCommand extends Command
     {
         $className = $name . 'Model';
         $path = $this->modulePath . "/App/Models/{$className}.php";
-        $stub = "<?php\n\nnamespace Modules\\{$name}\\App\\Models;\n\nuse Illuminate\\Database\\Eloquent\\Model;\n\nclass {$className} extends Model\n{\n    protected ". '$guarded' ." = [];\n}\n";
+        $stub = "<?php\n\nnamespace App\\Modules\\{$name}\\App\\Models;\n\nuse Illuminate\\Database\\Eloquent\\Model;\n\nclass {$className} extends Model\n{\n    protected ". '$guarded' ." = [];\n}\n";
         File::put($path, $stub);
     }
 
@@ -162,7 +162,7 @@ class MakeModuleCommand extends Command
     {
         $className = $name . 'ServiceProvider';
         $path = $this->modulePath . "/Providers/{$className}.php";
-        $stub = "<?php\n\nnamespace Modules\\{$name}\\Providers;\n\nuse Illuminate\\Support\\ServiceProvider;\n\nclass {$className} extends ServiceProvider\n{\n    public function register(): void\n    {\n        // Register bindings or module-specific services here\n    }\n\n    public function boot(): void\n    {\n        // Load routes, views, migrations, etc.\n    }\n}\n";
+        $stub = "<?php\n\nnamespace App\\Modules\\{$name}\\Providers;\n\nuse Illuminate\\Support\\ServiceProvider;\n\nclass {$className} extends ServiceProvider\n{\n    public function register(): void\n    {\n        // Register bindings or module-specific services here\n    }\n\n    public function boot(): void\n    {\n        // Load routes, views, migrations, etc.\n    }\n}\n";
         File::put($path, $stub);
     }
 
