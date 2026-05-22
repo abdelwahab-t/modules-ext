@@ -145,7 +145,7 @@ class MakeModuleCommand extends Command
     {
         $className = $name . 'Resource';
         $path = $this->modulePath . "/App/Http/Resources/$className.php";
-        $stub = "<?php\n\nnamespace App\\Modules\\$name\\App\\Http\\Resources;\n\nuse Illuminate\Http\Resources\Json\JsonResource;\n\nclass $className extends JsonResource\n{\n}\n";
+        $stub = "<?php\n\nnamespace App\\Modules\\$name\\App\\Http\\Resources;\n\nuse Illuminate\Http\Resources\Json\JsonResource;\n\nclass $className extends JsonResource\n{\n    public function toArray(" . '$request' . ")\n    {\n        return true;\n    }\n}\n";
         File::put($path, $stub);
     }
 
