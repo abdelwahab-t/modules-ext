@@ -48,7 +48,7 @@ class MakeModuleCommand extends Command
         $this->createMainProvider($name);
 
         $this->composer->dumpAutoloads();
-        $this->info("✅ Module [{$name}] created successfully at modules/{$name}");
+        $this->info("✅ Module [$name] created successfully at modules/$name");
         return self::SUCCESS;
 
     }
@@ -56,10 +56,9 @@ class MakeModuleCommand extends Command
     private function createModule(string $name): bool
     {
 
-        $this->modulePath = $this->application->basePath("App/Modules/{$name}");
-
+        $this->modulePath = $this->application->basePath("App/Modules/$name");
         if (File::exists($this->modulePath)) {
-            $this->error("Module [{$name}] already exists!");
+            $this->error("Module [$name] already exists!");
             return false;
         }
 
@@ -95,7 +94,7 @@ class MakeModuleCommand extends Command
         if ($this->option('api')) {
             File::put(
                 $this->modulePath . '/routes/api.php',
-                "<?php\n\nuse Illuminate\Support\Facades\Route;\n\nRoute::get('/" . strtolower($name) . "', function () {\n    return response()->json(['message' => '{$name} API endpoint working']);\n});\n"
+                "<?php\n\nuse Illuminate\Support\Facades\Route;\n\nRoute::get('/" . strtolower($name) . "', function () {\n    return response()->json(['message' => '$name API endpoint working']);\n});\n"
             );
         }
 
@@ -111,7 +110,7 @@ class MakeModuleCommand extends Command
     private function createViews(string $name): void
     {
         File::makeDirectory($this->modulePath . '/views', 0755, true);
-        File::put($this->modulePath . '/views/index.blade.php', "<h1>{$name} Module Loaded!</h1>");
+        File::put($this->modulePath . '/views/index.blade.php', "<h1>$name Module Loaded!</h1>");
     }
 
     private function createLanguages(): void
@@ -123,46 +122,46 @@ class MakeModuleCommand extends Command
 
     private function createConfigurations(string $name): void
     {
-        File::put($this->modulePath . '/config.php', "<?php\n\nreturn [\n    // {$name} module config\n];\n");
+        File::put($this->modulePath . '/config.php', "<?php\n\nreturn [\n    // $name module config\n];\n");
     }
 
     private function createMainController(string $name): void
     {
         $className = $name . 'Controller';
-        $path = $this->modulePath . "/App/Http/Controllers/{$className}.php";
-        $stub = "<?php\n\nnamespace App\\Modules\\{$name}\\App\\Http\\Controllers;\n\nuse Illuminate\\Http\\Request;\nuse Illuminate\\Routing\\Controller;\n\nclass {$className} extends Controller\n{\n    public function __invoke()\n    {\n        return response()->json(['message' => '{$name} controller works']);\n    }\n}\n";
+        $path = $this->modulePath . "/App/Http/Controllers/$className.php";
+        $stub = "<?php\n\nnamespace App\\Modules\\$name\\App\\Http\\Controllers;\n\nuse Illuminate\\Routing\\Controller;\n\nclass $className extends Controller\n{\n    public function __invoke()\n    {\n        return response()->json(['message' => '$name controller works']);\n    }\n}\n";
         File::put($path, $stub);
     }
 
     private function createMainRequest(string $name): void
     {
         $className = $name . 'Request';
-        $path = $this->modulePath . "/App/Http/Requests/{$className}.php";
-        $stub = "<?php\n\nnamespace App\\Modules\\{$name}\\App\\Http\\Requests;\n\nuse Illuminate\\Foundation\\Http\\FormRequest;\n\nclass {$className} extends FormRequest\n{\n    public function authorize()\n    {\n        return true;\n    }\n\n    public function rules()\n    {\n        return [];\n    }\n}\n";
+        $path = $this->modulePath . "/App/Http/Requests/$className.php";
+        $stub = "<?php\n\nnamespace App\\Modules\\$name\\App\\Http\\Requests;\n\nuse Illuminate\\Foundation\\Http\\FormRequest;\n\nclass $className extends FormRequest\n{\n    public function authorize(): bool\n    {\n        return true;\n    }\n\n    public function rules(): array\n    {\n        return [];\n    }\n}\n";
         File::put($path, $stub);
     }
 
     private function createMainResource(string $name): void
     {
         $className = $name . 'Resource';
-        $path = $this->modulePath . "/App/Http/Resources/{$className}.php";
-        $stub = "<?php\n\nnamespace App\\Modules\\{$name}\\App\\Http\\Resources;\n\nuse Illuminate\\Http\\Resources\\JsonResource;\n\nclass {$className} extends JsonResource\n{\n    public function toArray(". '$request' .")\n    {\n        return parent::toArray(". '$request' .");\n    }\n}\n";
+        $path = $this->modulePath . "/App/Http/Resources/$className.php";
+        $stub = "<?php\n\nnamespace App\\Modules\\$name\\App\\Http\\Resources;\n\nuse Illuminate\\Http\\Resources\\JsonResource;\n\nclass $className extends JsonResource\n{\n    public function toArray(". '$request' ."): array\n    {\n        return parent::toArray(". '$request' .");\n    }\n}\n";
         File::put($path, $stub);
     }
 
     private function createMainModel(string $name): void
     {
         $className = $name . 'Model';
-        $path = $this->modulePath . "/App/Models/{$className}.php";
-        $stub = "<?php\n\nnamespace App\\Modules\\{$name}\\App\\Models;\n\nuse Illuminate\\Database\\Eloquent\\Model;\n\nclass {$className} extends Model\n{\n    protected ". '$guarded' ." = [];\n}\n";
+        $path = $this->modulePath . "/App/Models/$className.php";
+        $stub = "<?php\n\nnamespace App\\Modules\\$name\\App\\Models;\n\nuse Illuminate\\Database\\Eloquent\\Model;\n\nclass $className extends Model\n{\n    protected ". '$guarded' ." = [];\n}\n";
         File::put($path, $stub);
     }
 
     private function createMainProvider(string $name): void
     {
         $className = $name . 'ServiceProvider';
-        $path = $this->modulePath . "/Providers/{$className}.php";
-        $stub = "<?php\n\nnamespace App\\Modules\\{$name}\\Providers;\n\nuse Illuminate\\Support\\ServiceProvider;\n\nclass {$className} extends ServiceProvider\n{\n    public function register(): void\n    {\n        // Register bindings or module-specific services here\n    }\n\n    public function boot(): void\n    {\n        // Load routes, views, migrations, etc.\n    }\n}\n";
+        $path = $this->modulePath . "/Providers/$className.php";
+        $stub = "<?php\n\nnamespace App\\Modules\\$name\\Providers;\n\nuse Illuminate\\Support\\ServiceProvider;\n\nclass $className extends ServiceProvider\n{\n    public function register(): void\n    {\n        // Register bindings or module-specific services here\n    }\n\n    public function boot(): void\n    {\n        // Load routes, views, migrations, etc.\n    }\n}\n";
         File::put($path, $stub);
     }
 
