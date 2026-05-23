@@ -46,6 +46,7 @@ class MakeModuleCommand extends Command
         $this->createMainRequest($name);
         $this->createMainResource($name);
         $this->createMainProvider($name);
+        $this->createMainMiddleware($name);
 
         $this->composer->dumpAutoloads();
         $this->info("✅ Module [$name] created successfully at modules/$name");
@@ -69,10 +70,11 @@ class MakeModuleCommand extends Command
     private function createApp(): void
     {
         File::makeDirectory($this->modulePath . '/App/Models', 0755, true);
+        File::makeDirectory($this->modulePath . '/App/Providers', 0755, true);
         File::makeDirectory($this->modulePath . '/App/Http/Controllers', 0755, true);
         File::makeDirectory($this->modulePath . '/App/Http/Requests', 0755, true);
         File::makeDirectory($this->modulePath . '/App/Http/Resources', 0755, true);
-        File::makeDirectory($this->modulePath . '/Providers', 0755, true);
+        File::makeDirectory($this->modulePath . '/App/Http/Middleware', 0755, true);
     }
 
     private function createRoutes(string $name): void
@@ -122,47 +124,64 @@ class MakeModuleCommand extends Command
 
     private function createConfigurations(string $name): void
     {
-        File::put($this->modulePath . '/config.php', "<?php\n\nreturn [\n    // $name module config\n];\n");
+        File::put(
+            $this->modulePath . '/config.php',
+            "<?php\n\nreturn [\n    // $name module config\n];\n"
+        );
     }
 
     private function createMainController(string $name): void
     {
         $className = $name . 'Controller';
-        $path = $this->modulePath . "/App/Http/Controllers/$className.php";
-        $stub = "<?php\n\nnamespace App\\Modules\\$name\\App\\Http\\Controllers;\n\nuse Illuminate\\Routing\\Controller;\n\nuse Illuminate\Http\JsonResponse;\n\nclass $className extends Controller\n{\n    public function __invoke(): JsonResponse\n    {\n        return response()->json(['message' => '$name controller works']);\n    }\n}\n";
-        File::put($path, $stub);
+        File::put(
+            $this->modulePath . "/App/Http/Controllers/$className.php",
+            "<?php\n\nnamespace App\\Modules\\$name\\App\\Http\\Controllers;\n\nuse Illuminate\\Routing\\Controller;\n\nuse Illuminate\Http\JsonResponse;\n\nclass $className extends Controller\n{\n    public function __invoke(): JsonResponse\n    {\n        return response()->json(['message' => '$name controller works']);\n    }\n}\n"
+        );
     }
 
     private function createMainRequest(string $name): void
     {
         $className = $name . 'Request';
-        $path = $this->modulePath . "/App/Http/Requests/$className.php";
-        $stub = "<?php\n\nnamespace App\\Modules\\$name\\App\\Http\\Requests;\n\nuse Illuminate\\Foundation\\Http\\FormRequest;\n\nclass $className extends FormRequest\n{\n    public function authorize(): bool\n    {\n        return true;\n    }\n\n    public function rules(): array\n    {\n        return [];\n    }\n}\n";
-        File::put($path, $stub);
+        File::put(
+            $this->modulePath . "/App/Http/Requests/$className.php",
+            "<?php\n\nnamespace App\\Modules\\$name\\App\\Http\\Requests;\n\nuse Illuminate\\Foundation\\Http\\FormRequest;\n\nclass $className extends FormRequest\n{\n    public function authorize(): bool\n    {\n        return true;\n    }\n\n    public function rules(): array\n    {\n        return [];\n    }\n}\n"
+        );
     }
 
     private function createMainResource(string $name): void
     {
         $className = $name . 'Resource';
-        $path = $this->modulePath . "/App/Http/Resources/$className.php";
-        $stub = "<?php\n\nnamespace App\\Modules\\$name\\App\\Http\\Resources;\n\nuse Illuminate\Http\Resources\Json\JsonResource;\n\nclass $className extends JsonResource\n{\n    public function toArray(" . '$request' . ")\n    {\n       parent::toArray(" . '$request' . ");\n    }\n}\n";
-        File::put($path, $stub);
+        File::put(
+            $this->modulePath . "/App/Http/Resources/$className.php",
+            "<?php\n\nnamespace App\\Modules\\$name\\App\\Http\\Resources;\n\nuse Illuminate\Http\Resources\Json\JsonResource;\n\nclass $className extends JsonResource\n{\n    public function toArray(" . '$request' . ")\n    {\n       parent::toArray(" . '$request' . ");\n    }\n}\n"
+        );
     }
 
     private function createMainModel(string $name): void
     {
         $className = $name . 'Model';
-        $path = $this->modulePath . "/App/Models/$className.php";
-        $stub = "<?php\n\nnamespace App\\Modules\\$name\\App\\Models;\n\nuse Illuminate\\Database\\Eloquent\\Model;\n\nclass $className extends Model\n{\n    protected ". '$guarded' ." = [];\n}\n";
-        File::put($path, $stub);
+        File::put(
+            $this->modulePath . "/App/Models/$className.php",
+            "<?php\n\nnamespace App\\Modules\\$name\\App\\Models;\n\nuse Illuminate\\Database\\Eloquent\\Model;\n\nclass $className extends Model\n{\n    protected ". '$guarded' ." = [];\n}\n"
+        );
     }
 
     private function createMainProvider(string $name): void
     {
         $className = $name . 'ServiceProvider';
-        $path = $this->modulePath . "/Providers/$className.php";
-        $stub = "<?php\n\nnamespace App\\Modules\\$name\\Providers;\n\nuse Illuminate\\Support\\ServiceProvider;\n\nclass $className extends ServiceProvider\n{\n    public function register(): void\n    {\n        // Register bindings or module-specific services here\n    }\n\n    public function boot(): void\n    {\n        // Load routes, views, migrations, etc.\n    }\n}\n";
-        File::put($path, $stub);
+        File::put(
+            $this->application->basePath('app/Providers/') . "$className.php",
+            "<?php\n\nnamespace App\\Providers;\n\nuse Illuminate\\Support\\ServiceProvider;\n\nclass $className extends ServiceProvider\n{\n    public function register(): void\n    {\n        // Register bindings or module-specific services here\n    }\n\n    public function boot(): void\n    {\n        // Load routes, views, migrations, etc.\n    }\n}\n"
+        );
+    }
+
+    private function createMainMiddleware(string $name): void
+    {
+        $className = $name . 'Middleware';
+        File::put(
+            $this->modulePath . "/App/Http/Middleware/$className.php",
+            "<?php\n\nnamespace App\\Modules\\{$name}\\App\\Http\\Middleware;\n\nuse Closure;\nuse Illuminate\\Http\\Request;\n\nclass $className\n{\n    public function handle(Request " . '$request' . ", Closure " . '$next' . ")\n    {\n        // Add your middleware logic here\n        return " . '$next($request)' . ";\n    }\n}\n"
+        );
     }
 
 }
