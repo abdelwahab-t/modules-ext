@@ -31,25 +31,25 @@ class MakeModuleCommand extends Command
     public function handle(): int
     {
 
-        if(!$this->createModule($name = ucfirst($this->argument('name')))){
+        if (!$this->createModule($name = ucfirst($this->argument('name')))){
             return self::FAILURE;
         }
 
-        $this->createApp();
-        $this->createMigrations();
-        $this->createLanguages();
-        $this->createConfigurations($name);
-        $this->createRoutes($name);
-        $this->createViews($name);
-        $this->createMainController($name);
-        $this->createMainModel($name);
-        $this->createMainRequest($name);
-        $this->createMainResource($name);
-        $this->createMainProvider($name);
-        $this->createMainMiddleware($name);
+        $this->createApp()
+            ->createMigrations()
+            ->createLanguages()
+            ->createConfigurations($name)
+            ->createRoutes($name)
+            ->createViews($name)
+            ->createMainController($name)
+            ->createMainModel($name)
+            ->createMainRequest($name)
+            ->createMainResource($name)
+            ->createMainProvider($name)
+            ->createMainMiddleware($name)
+            ->composer->dumpAutoloads();
 
-        $this->composer->dumpAutoloads();
-        $this->info("✅ Module [$name] created successfully at modules/$name");
+        $this->info("Module [$name] created successfully at modules/$name");
         return self::SUCCESS;
 
     }
@@ -67,7 +67,7 @@ class MakeModuleCommand extends Command
 
     }
 
-    private function createApp(): void
+    private function createApp(): self
     {
         File::makeDirectory($this->modulePath . '/App/Models', 0755, true);
         File::makeDirectory($this->modulePath . '/App/Providers', 0755, true);
@@ -75,18 +75,20 @@ class MakeModuleCommand extends Command
         File::makeDirectory($this->modulePath . '/App/Http/Requests', 0755, true);
         File::makeDirectory($this->modulePath . '/App/Http/Resources', 0755, true);
         File::makeDirectory($this->modulePath . '/App/Http/Middleware', 0755, true);
+        
+        return $this;
     }
 
-    private function createRoutes(string $name): void
+    private function createRoutes(string $name): self
     {
 
-        if($this->option('no-routes')) {
-            return;
+        if ($this->option('no-routes')) {
+            return $this;
         }
 
         File::makeDirectory($this->modulePath . '/routes', 0755, true);
 
-        if(!$this->option('no-web')) {
+        if (!$this->option('no-web')) {
             File::put(
                 $this->modulePath . '/routes/web.php',
                 "<?php\n\nuse Illuminate\Support\Facades\Route;\n\nRoute::get('/" . strtolower($name) . "', function () {\n    return view('" . strtolower($name) . "::index');\n});\n"
@@ -100,88 +102,102 @@ class MakeModuleCommand extends Command
             );
         }
 
+        return $this;
+
     }
 
-    private function createMigrations(): void
+    private function createMigrations(): self
     {
         File::makeDirectory($this->modulePath . '/database/migrations', 0755, true);
         File::makeDirectory($this->modulePath . '/database/seeders', 0755, true);
         File::makeDirectory($this->modulePath . '/database/factories', 0755, true);
+
+        return $this;
     }
 
-    private function createViews(string $name): void
+    private function createViews(string $name): self
     {
         File::makeDirectory($this->modulePath . '/views', 0755, true);
         File::put($this->modulePath . '/views/index.blade.php', "<h1>$name Module Loaded!</h1>");
+
+        return $this;
     }
 
-    private function createLanguages(): void
+    private function createLanguages(): self
     {
         foreach (self::LANGUAGES as $lang) {
             File::makeDirectory($this->modulePath . '/lang/' . $lang, 0755, true);
         }
+        return $this;
     }
 
-    private function createConfigurations(string $name): void
+    private function createConfigurations(string $name): self
     {
         File::put(
             $this->modulePath . '/config.php',
             "<?php\n\nreturn [\n    // $name module config\n];\n"
         );
+        return $this;
     }
 
-    private function createMainController(string $name): void
+    private function createMainController(string $name): self
     {
         $className = $name . 'Controller';
         File::put(
             $this->modulePath . "/App/Http/Controllers/$className.php",
             "<?php\n\nnamespace App\\Modules\\$name\\App\\Http\\Controllers;\n\nuse Illuminate\\Routing\\Controller;\n\nuse Illuminate\Http\JsonResponse;\n\nclass $className extends Controller\n{\n    public function __invoke(): JsonResponse\n    {\n        return response()->json(['message' => '$name controller works']);\n    }\n}\n"
         );
+        return $this;
     }
 
-    private function createMainRequest(string $name): void
+    private function createMainRequest(string $name): self
     {
         $className = $name . 'Request';
         File::put(
             $this->modulePath . "/App/Http/Requests/$className.php",
             "<?php\n\nnamespace App\\Modules\\$name\\App\\Http\\Requests;\n\nuse Illuminate\\Foundation\\Http\\FormRequest;\n\nclass $className extends FormRequest\n{\n    public function authorize(): bool\n    {\n        return true;\n    }\n\n    public function rules(): array\n    {\n        return [];\n    }\n}\n"
         );
+        return $this;
     }
 
-    private function createMainResource(string $name): void
+    private function createMainResource(string $name): self
     {
         $className = $name . 'Resource';
         File::put(
             $this->modulePath . "/App/Http/Resources/$className.php",
             "<?php\n\nnamespace App\\Modules\\$name\\App\\Http\\Resources;\n\nuse Illuminate\Http\Resources\Json\JsonResource;\n\nclass $className extends JsonResource\n{\n    public function toArray(" . '$request' . ")\n    {\n       parent::toArray(" . '$request' . ");\n    }\n}\n"
         );
+        return $this;
     }
 
-    private function createMainModel(string $name): void
+    private function createMainModel(string $name): self
     {
         $className = $name . 'Model';
         File::put(
             $this->modulePath . "/App/Models/$className.php",
             "<?php\n\nnamespace App\\Modules\\$name\\App\\Models;\n\nuse Illuminate\\Database\\Eloquent\\Model;\n\nclass $className extends Model\n{\n    protected ". '$guarded' ." = [];\n}\n"
         );
+        return $this;
     }
 
-    private function createMainProvider(string $name): void
+    private function createMainProvider(string $name): self
     {
         $className = $name . 'ServiceProvider';
         File::put(
             $this->application->basePath('app/Providers/') . "$className.php",
-            "<?php\n\nnamespace App\\Providers;\n\nuse Illuminate\\Support\\ServiceProvider;\n\nclass $className extends ServiceProvider\n{\n    public function register(): void\n    {\n        // Register bindings or module-specific services here\n    }\n\n    public function boot(): void\n    {\n        // Load routes, views, migrations, etc.\n    }\n}\n"
+            "<?php\n\nnamespace App\\Providers;\n\nuse Illuminate\\Support\\ServiceProvider;\n\nclass $className extends ServiceProvider\n{\n    public function register(): self\n    {\n        // Register bindings or module-specific services here\n    }\n\n    public function boot(): self\n    {\n        // Load routes, views, migrations, etc.\n    }\n}\n"
         );
+        return $this;
     }
 
-    private function createMainMiddleware(string $name): void
+    private function createMainMiddleware(string $name): self
     {
         $className = $name . 'Middleware';
         File::put(
             $this->modulePath . "/App/Http/Middleware/$className.php",
             "<?php\n\nnamespace App\\Modules\\{$name}\\App\\Http\\Middleware;\n\nuse Closure;\nuse Illuminate\\Http\\Request;\n\nclass $className\n{\n    public function handle(Request " . '$request' . ", Closure " . '$next' . ")\n    {\n        // Add your middleware logic here\n        return " . '$next($request)' . ";\n    }\n}\n"
         );
+        return $this;
     }
 
 }
