@@ -28,4 +28,23 @@ abstract class BaseModuleGeneratorCommand extends Command
         return $baseNamespace . '\\' . $module;
     }
 
+    protected function validateModule(string $module): ?string
+    {
+
+        $modulePath = $this->resolveModulePath($module);
+
+        if (!File::exists($modulePath)) {
+            if ($this->confirm('Module does not exist. Do you want to create it?', true)) {
+                $this->call('make:module', ['name' => $module]);
+                $modulePath = $this->resolveModulePath($module);
+            }else{
+                return null;
+            }
+        }
+
+        return $modulePath;
+    }
+
+    public abstract function handle(): int;
+
 }

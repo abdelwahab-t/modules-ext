@@ -16,6 +16,7 @@ class MakeModuleGenerateCommand extends BaseModuleGeneratorCommand
         $type = $this->argument('type');
         $name = $this->argument('name');
         $module = $this->option('module');
+
         if (!$module) {
             $this->error('The --module option is required.');
             return self::FAILURE;
@@ -46,24 +47,7 @@ class MakeModuleGenerateCommand extends BaseModuleGeneratorCommand
         return self::SUCCESS;
     }
 
-    private function validateModule(string $module): ?string
-    {
-
-        $modulePath = $this->resolveModulePath($module);
-
-        if (!File::exists($modulePath)) {
-            if ($this->confirm('Module does not exist. Do you want to create it?', true)) {
-                $this->call('make:module', ['name' => $module]);
-                $modulePath = $this->resolveModulePath($module);
-            }else{
-                return null;
-            }
-        }
-
-        return $modulePath;
-    }
-
-    protected function classSuffix(string $type): string
+    private function classSuffix(string $type): string
     {
         return match ($type) {
             'controller' => 'Controller',
@@ -80,7 +64,7 @@ class MakeModuleGenerateCommand extends BaseModuleGeneratorCommand
         };
     }
 
-    protected function buildStub(string $type, string $name, string $classNamespace): string
+    private function buildStub(string $type, string $name, string $classNamespace): string
     {
         $className = $name . $this->classSuffix($type);
         $base = "<?php\n\nnamespace $classNamespace;\n\n";
