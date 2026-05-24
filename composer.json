@@ -11,7 +11,8 @@
     "extra": {
         "laravel": {
             "providers": [
-                "AbdelwahabT\\ModulesExt\\Providers\\ModulesExtServiceProvider"
+                "AbdelwahabT\\ModulesExt\\Providers\\ModulesExtServiceProvider",
+                "AbdelwahabT\\ModulesExt\\Providers\\ModuleArtisanServiceProvider"
             ]
         }
     },
