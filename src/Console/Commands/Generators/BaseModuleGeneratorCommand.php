@@ -14,7 +14,6 @@ abstract class BaseModuleGeneratorCommand extends Command
 
     protected function getModulesBasePath(): string
     {
-        // Config key modules-artisan.path defaults to app/Modules
         return base_path(Config::get('modules-artisan.path', 'app/Modules'));
     }
 
@@ -29,11 +28,4 @@ abstract class BaseModuleGeneratorCommand extends Command
         return $baseNamespace . '\\' . $module;
     }
 
-    protected function ensureModuleExists(string $module): void
-    {
-        $path = $this->resolveModulePath($module);
-        if (!File::exists($path)) {
-            File::makeDirectory($path, 0755, true);
-        }
-    }
 }

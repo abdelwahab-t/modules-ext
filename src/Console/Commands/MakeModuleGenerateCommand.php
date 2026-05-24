@@ -20,14 +20,22 @@ class MakeModuleGenerateCommand extends BaseModuleGeneratorCommand
             $this->error('The --module option is required.');
             return self::FAILURE;
         }
-        $this->ensureModuleExists($module);
-        $modulePath = $this->resolveModulePath($module);
+
+        $modulePath = $this->validateModule($module);
+
+        if (!$modulePath) {
+            $this->error('Module does not exist.');
+            return self::FAILURE;
+        }
+
         $namespace = $this->resolveNamespace($module);
         $typeMap = Config::get('modules-artisan.type_map');
+
         if (!isset($typeMap[$type])) {
             $this->error('Unsupported generator type: ' . $type);
             return self::FAILURE;
         }
+
         $relativePath = $typeMap[$type] . '/' . $name . $this->classSuffix($type) . '.php';
         $fullPath = $modulePath . '/' . $relativePath;
         $classNamespace = $namespace . '\\' . str_replace(['/', '\\'], '\\', $typeMap[$type]);
@@ -36,6 +44,23 @@ class MakeModuleGenerateCommand extends BaseModuleGeneratorCommand
         File::put($fullPath, $stub);
         $this->info("Created $type $name in module $module.");
         return self::SUCCESS;
+    }
+
+    private function validateModule(string $module): ?string
+    {
+
+        $modulePath = $this->resolveModulePath($module);
+
+        if (!File::exists($modulePath)) {
+            if ($this->confirm('Module does not exist. Do you want to create it?', true)) {
+                $this->call('make:module', ['name' => $module]);
+                $modulePath = $this->resolveModulePath($module);
+            }else{
+                return null;
+            }
+        }
+
+        return $modulePath;
     }
 
     protected function classSuffix(string $type): string
