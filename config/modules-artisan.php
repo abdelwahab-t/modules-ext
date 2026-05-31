@@ -13,6 +13,7 @@ return [
         'factory' => 'Database/Factories',
         'seeder' => 'Database/Seeders',
         'policy' => 'App/Policies',
+        'provider' => 'App/Providers',
         'test' => 'Tests/Feature',
         'mail' => 'App/Mail',
         'event' => 'App/Events',

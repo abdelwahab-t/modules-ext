@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Config;
 
 class MakeModuleGenerateCommand extends BaseModuleGeneratorCommand
 {
-    protected $signature = 'make:module:generate {type : The generator type (model,migration,controller,request,resource,factory,seeder,policy,test,mail,event,listener,job,broadcast)} {name : Name of the class} {--module= : The target module name}';
+    protected $signature = 'make:module:generate {type : The generator type (model,migration,controller,request,resource,provider,factory,seeder,policy,test,mail,event,listener,job,broadcast)} {name : Name of the class} {--module= : The target module name}';
     protected $description = 'Generate a Laravel class scoped to a module using the --module flag.';
 
     public function handle(): int
@@ -54,6 +54,7 @@ class MakeModuleGenerateCommand extends BaseModuleGeneratorCommand
             'request' => 'Request',
             'resource' => 'Resource',
             'policy' => 'Policy',
+            'provider' => 'ServiceProvider',
             'test' => 'Test',
             'mail' => 'Mail',
             'event' => 'Event',
@@ -83,6 +84,7 @@ class MakeModuleGenerateCommand extends BaseModuleGeneratorCommand
             'listener' => $base . "\nclass $className\n{\n    public function handle(\$event): void\n    {\n        //\n    }\n}\n",
             'job' => $base . "use Illuminate\\Contracts\\Queue\\ShouldQueue;\nuse Illuminate\\Foundation\\Queue\\Queueable;\n\nclass $className implements ShouldQueue\n{\n    use Queueable;\n\n    public function handle(): void\n    {\n        //\n    }\n}\n",
             'broadcast' => $base . "use Illuminate\\Broadcasting\\InteractsWithSockets;\nuse Illuminate\\Broadcasting\\PresenceChannel;\nuse Illuminate\\Contracts\\Broadcasting\\ShouldBroadcast;\n\nclass $className implements ShouldBroadcast\n{\n    use InteractsWithSockets;\n\n    public function broadcastOn(): array\n    {\n        return [new PresenceChannel('presence')];\n    }\n}\n",
+            'provider' => $base . "use Illuminate\\Support\\ServiceProvider;\n\nclass $className extends ServiceProvider\n{\n    public function register(): void\n    {\n        // Register bindings or module-specific services here\n    }\n\n    public function boot(): void\n    {\n        // Load routes, views, migrations, translations, etc.\n    }\n}\n",
             default => $base . "// Stub for $type not implemented yet.\n",
         };
     }

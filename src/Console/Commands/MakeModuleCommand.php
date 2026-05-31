@@ -172,10 +172,9 @@ class MakeModuleCommand extends Command
 
     private function createMainModel(string $name): self
     {
-        $className = $name . 'Model';
         File::put(
-            $this->modulePath . "/App/Models/$className.php",
-            "<?php\n\nnamespace App\\Modules\\$name\\App\\Models;\n\nuse Illuminate\\Database\\Eloquent\\Model;\n\nclass $className extends Model\n{\n    protected ". '$guarded' ." = [];\n}\n"
+            $this->modulePath . "/App/Models/$name.php",
+            "<?php\n\nnamespace App\\Modules\\$name\\App\\Models;\n\nuse Illuminate\\Database\\Eloquent\\Model;\n\nclass $name extends Model\n{\n    protected ". '$guarded' ." = [];\n}\n"
         );
         return $this;
     }
@@ -184,8 +183,8 @@ class MakeModuleCommand extends Command
     {
         $className = $name . 'ServiceProvider';
         File::put(
-            $this->application->basePath('app/Providers/') . "$className.php",
-            "<?php\n\nnamespace App\\Providers;\n\nuse Illuminate\\Support\\ServiceProvider;\n\nclass $className extends ServiceProvider\n{\n    public function register(): self\n    {\n        // Register bindings or module-specific services here\n    }\n\n    public function boot(): self\n    {\n        // Load routes, views, migrations, etc.\n    }\n}\n"
+            $this->modulePath . "/App/Providers/$className.php",
+            "<?php\n\nnamespace App\\Modules\\$name\\App\\Providers;\n\nuse Illuminate\\Support\\ServiceProvider;\n\nclass $className extends ServiceProvider\n{\n    public function register(): void\n    {\n        // Register bindings or module-specific services here\n    }\n\n    public function boot(): void\n    {\n        // Load routes, views, migrations, translations, etc.\n    }\n}\n"
         );
         return $this;
     }
@@ -195,7 +194,7 @@ class MakeModuleCommand extends Command
         $className = $name . 'Middleware';
         File::put(
             $this->modulePath . "/App/Http/Middleware/$className.php",
-            "<?php\n\nnamespace App\\Modules\\{$name}\\App\\Http\\Middleware;\n\nuse Closure;\nuse Illuminate\\Http\\Request;\n\nclass $className\n{\n    public function handle(Request " . '$request' . ", Closure " . '$next' . ")\n    {\n        // Add your middleware logic here\n        return " . '$next($request)' . ";\n    }\n}\n"
+            "<?php\n\nnamespace App\\Modules\\$name\\App\\Http\\Middleware;\n\nuse Closure;\nuse Illuminate\\Http\\Request;\n\nclass $className\n{\n    public function handle(Request " . '$request' . ", Closure " . '$next' . ")\n    {\n        // Add your middleware logic here\n        return " . '$next($request)' . ";\n    }\n}\n"
         );
         return $this;
     }
