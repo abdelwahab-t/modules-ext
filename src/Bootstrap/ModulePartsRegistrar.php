@@ -33,11 +33,11 @@ final readonly class ModulePartsRegistrar
         return new ModuleDetailsDto(
             $module,
             basename($module),
-            $module . '/views',
-            $module . '/lang',
-            [$module . '/routes/web.php', $module . '/routes/api.php'],
-            [$module . '/database/migrations'],
-            $module . '/database/seeders',
+            $module . '\\views',
+            $module . '\\lang',
+            [$module . '\\routes\\web.php', $module . '\\routes\\api.php'],
+            [$module . '\\database\\migrations'],
+            $module . '\\database\\seeders',
         );
     }
 

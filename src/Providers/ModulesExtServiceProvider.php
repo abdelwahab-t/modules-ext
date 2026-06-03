@@ -31,7 +31,7 @@ class ModulesExtServiceProvider extends ServiceProvider implements ModuleRegistr
                 MakeModuleCommand::class,
             ]);
         }
-        $this->moduleBootManager->boot('App/Modules', $this);
+        $this->moduleBootManager->boot(base_path('App/Modules'), $this);
     }
 
     public function loadViews(string|array $path, string $namespace): void
