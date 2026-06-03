@@ -18,7 +18,7 @@ final readonly class TranslationsLoader implements ModuleLoaderInterface
 
         $provider->loadTranslations(
             $moduleDetailsDto->translationsPath,
-            $moduleDetailsDto->moduleBasename
+            strtolower($moduleDetailsDto->moduleBasename)
         );
     }
 }
