@@ -12,7 +12,15 @@ final readonly class ClassNameResolver
      */
     public function resolve(string $file, string $basePath): string
     {
-        $class = str_replace(['/', '.php'], ['\\', ''],  str_replace($basePath . '/', '', $file));
+        $class = str_replace(
+            ['/', '.php'],
+            ['\\', ''],
+            str_replace(
+                [$basePath . '/', $basePath . '\\'],
+                '',
+                $file
+            )
+        );
 
         if (!class_exists($class)) {
             $class = ucfirst($class);
