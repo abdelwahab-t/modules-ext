@@ -13,12 +13,6 @@ use Illuminate\Support\ServiceProvider;
 class ModulesExtServiceProvider extends ServiceProvider implements ModuleRegistrarInterface
 {
 
-    const MODULES_PATH = [
-        'App/Modules',
-        'app/Modules',
-        'app/modules'
-    ];
-
     private ModuleBootManager $moduleBootManager;
 
     public function __construct($app)
@@ -38,19 +32,10 @@ class ModulesExtServiceProvider extends ServiceProvider implements ModuleRegistr
             ]);
         }
 
-        $modulesPath = null;
-
-        foreach (self::MODULES_PATH as $path) {
-            if (is_dir(base_path($path))) {
-                $modulesPath = base_path($path);
-                break;
-            }
-        }
-
-        if ($modulesPath) {
-            $this->moduleBootManager->boot($modulesPath, $this);
-        }
-
+        $this->moduleBootManager->boot(
+            str_replace('\\', '/', base_path('App/Modules')),
+            $this
+        );
     }
 
     public function loadViews(string|array $path, string $namespace): void
