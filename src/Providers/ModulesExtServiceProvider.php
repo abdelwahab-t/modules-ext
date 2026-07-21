@@ -13,6 +13,12 @@ use Illuminate\Support\ServiceProvider;
 class ModulesExtServiceProvider extends ServiceProvider implements ModuleRegistrarInterface
 {
 
+    const MODULES_PATH = [
+        'App/Modules',
+        'app/Modules',
+        'app/modules'
+    ];
+
     private ModuleBootManager $moduleBootManager;
 
     public function __construct($app)
@@ -31,7 +37,20 @@ class ModulesExtServiceProvider extends ServiceProvider implements ModuleRegistr
                 MakeModuleCommand::class,
             ]);
         }
-        $this->moduleBootManager->boot(base_path('App/Modules'), $this);
+
+        $modulesPath = null;
+
+        foreach (self::MODULES_PATH as $path) {
+            if (is_dir(base_path($path))) {
+                $modulesPath = base_path($path);
+                break;
+            }
+        }
+
+        if ($modulesPath) {
+            $this->moduleBootManager->boot($modulesPath, $this);
+        }
+
     }
 
     public function loadViews(string|array $path, string $namespace): void
