@@ -13,8 +13,8 @@ final readonly class ClassNameResolver
     public function resolve(string $file, string $basePath): string
     {
         $class = str_replace(
-            ["/", ".php", "$basePath\\"],
-            ['\\', '', ''],
+            [$basePath . DIRECTORY_SEPARATOR, DIRECTORY_SEPARATOR, ".php"],
+            ['', '\\', ''],
             $file
         );
 

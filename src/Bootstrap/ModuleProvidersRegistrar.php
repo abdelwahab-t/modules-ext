@@ -18,7 +18,7 @@ final readonly class ModuleProvidersRegistrar
      */
     public function register(string $modulesPath, ModuleRegistrarInterface $provider): void
     {
-        foreach (glob($modulesPath . '/*/App/Providers/*.php') as $file) {
+        foreach (glob(str_replace(['/', '\\'], DIRECTORY_SEPARATOR, $modulesPath . '/*/App/Providers/*.php')) as $file) {
             $provider->getApp()->register(
                 $this->classNameResolver->resolve($file, $provider->getApp()->basePath())
             );
