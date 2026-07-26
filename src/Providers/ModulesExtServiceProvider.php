@@ -33,7 +33,7 @@ class ModulesExtServiceProvider extends ServiceProvider implements ModuleRegistr
         }
 
         $this->moduleBootManager->boot(
-            str_replace(['\\', '/'], DIRECTORY_SEPARATOR, base_path('App/Modules')),
+            str_replace(['\\', '/'], DIRECTORY_SEPARATOR, base_path('app/Modules')),
             $this
         );
     }

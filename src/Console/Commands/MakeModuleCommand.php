@@ -57,7 +57,7 @@ class MakeModuleCommand extends Command
     private function createModule(string $name): bool
     {
 
-        $this->modulePath = $this->application->basePath("App/Modules/$name");
+        $this->modulePath = $this->application->basePath("app/Modules/$name");
         if (File::exists($this->modulePath)) {
             $this->error("Module [$name] already exists!");
             return false;
